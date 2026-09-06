@@ -76,6 +76,7 @@
     transition: background 0.15s ease;
   }
   button#loginBtn:hover { background: var(--teal-darker); }
+  button#loginBtn:disabled { background: var(--border); cursor: not-allowed; }
   .form-footer {
     margin-top: 16px;
     text-align: center;
@@ -111,26 +112,10 @@
     text-align: center;
   }
   .brand-icon {
-    width: 90px;
-    height: 90px;
+    width: 215px;
+    height: 215px;
     margin-bottom: 16px;
     object-fit: contain;
-  }
-  .brand-name {
-    font-size: 1.6rem;
-    font-weight: 700;
-    color: var(--text);
-    margin: 0 0 4px;
-  }
-  .brand-tagline {
-    font-size: 0.95rem;
-    color: var(--muted);
-    margin: 0;
-  }
-  .brand-footer {
-    margin-top: 40px;
-    font-size: 0.85rem;
-    color: var(--muted);
   }
 
   @media (max-width: 640px) {
@@ -158,11 +143,27 @@
 
   <div class="brand-side">
     <img class="brand-icon" src="logo.png" alt="Logo" />
-    <h2 class="brand-name">MindEase</h2>
-    <p class="brand-tagline">Find peace in every breath</p>
-    <p class="brand-footer">Your Health is Our Priority</p>
+
   </div>
 </div>
+
+<script>
+  // --- Login flow -----------------------------------------------------
+  // Simple version: clicking Login goes straight to the dashboard.
+  // Once your backend has real auth (Stage 3), replace this with an
+  // actual POST to your login endpoint and only redirect on success.
+
+  const loginBtn = document.getElementById("loginBtn");
+
+  loginBtn.addEventListener("click", () => {
+    window.location.href = "dashboard-v2.html";
+  });
+
+  // Let pressing Enter in either field submit the form too
+  document.getElementById("password").addEventListener("keydown", (e) => {
+    if (e.key === "Enter") loginBtn.click();
+  });
+</script>
 
 </body>
 </html>
