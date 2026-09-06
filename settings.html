@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account & System Settings</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f3f7f0;
+            display: flex;
+            min-height: 100vh;
+            color: #1a1a1a;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 220px;
+            flex-shrink: 0;
+            background-color: #c0deb2;
+            padding: 40px 0 0 0;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 24px;
+            color: #2c3e23;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: 0;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+        }
+
+        .nav-item:hover, .nav-item:focus-visible {
+            background-color: rgba(255,255,255,0.25);
+            outline: none;
+        }
+
+        .nav-item.active {
+            background-color: #9fcc8b;
+            border-top-right-radius: 12px;
+            border-bottom-right-radius: 12px;
+            margin-right: 12px;
+            color: #1c2e15;
+        }
+
+        .nav-icon {
+            width: 18px;
+            height: 18px;
+            stroke: currentColor;
+            stroke-width: 2;
+            fill: none;
+            flex-shrink: 0;
+        }
+
+        /* Main Content Area */
+        .main-container {
+            flex: 1;
+            min-width: 0;
+            padding: 24px 40px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header Bar */
+        .top-header {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: #8fa0ad;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            overflow: hidden;
+        }
+
+        .page-title {
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 28px;
+            color: #000;
+        }
+
+        /* Dashboard Grid */
+        .grid-container {
+            display: grid;
+            grid-template-columns: minmax(300px, 1.1fr) minmax(280px, 1fr);
+            gap: 24px;
+            max-width: 1000px;
+        }
+
+        .column {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Card Styles */
+        .card {
+            background-color: #ffffff;
+            border-radius: 16px;
+            padding: 20px 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+            position: relative;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #000;
+        }
+
+        .card-subtext {
+            font-size: 12px;
+            color: #667;
+            margin-top: -10px;
+            margin-bottom: 14px;
+        }
+
+        /* Form Controls & Inputs */
+        .form-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+
+        .form-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .form-label {
+            width: 80px;
+            font-size: 14px;
+            color: #1a1a1a;
+            font-weight: 500;
+        }
+
+        .input-box {
+            flex: 1;
+            background-color: #f7f3e9;
+            border: 1px solid #e2ddd0;
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 14px;
+            color: #1a1a1a;
+            outline: none;
+            font-family: inherit;
+        }
+
+        .input-box:disabled {
+            background-color: #eee9dc;
+            color: #888;
+            cursor: not-allowed;
+        }
+
+        .input-box:focus:not(:disabled) {
+            border-color: #4a5568;
+        }
+
+        /* Toggle Switches */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+            flex-shrink: 0;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #d1d5db;
+            transition: .3s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #4a5568;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(20px);
+        }
+
+        /* Specific Rows inside Cards */
+        .card-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            gap: 12px;
+        }
+
+        .card-row-text {
+            font-size: 14px;
+            color: #1a1a1a;
+            font-weight: 500;
+        }
+
+        .card-row-sub {
+            font-size: 12px;
+            color: #667;
+            font-weight: 400;
+            margin-top: 2px;
+        }
+
+        /* Dropdown Element */
+        .select-dropdown {
+            background-color: #f7f3e9;
+            border: 1px solid #e2ddd0;
+            border-radius: 8px;
+            padding: 6px 12px;
+            font-size: 14px;
+            color: #1a1a1a;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            border-width: 1px;
+        }
+
+        .select-dropdown:hover, .select-dropdown:focus-visible {
+            border-color: #a8b8a0;
+            outline: none;
+        }
+
+        .arrow-down {
+            width: 12px;
+            height: 12px;
+            stroke: #333;
+            stroke-width: 2;
+            fill: none;
+            flex-shrink: 0;
+        }
+
+        /* Export Card */
+        .export-card {
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .export-header {
+            padding: 16px 24px 4px 24px;
+        }
+
+        .export-subtext {
+            padding: 0 24px 12px 24px;
+            font-size: 12px;
+            color: #667;
+        }
+
+        .export-content {
+            border-top: 1px solid #edf2f7;
+            padding: 14px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            background: none;
+            width: 100%;
+            font-family: inherit;
+            font-size: 14px;
+            text-align: left;
+        }
+
+        .export-content:hover, .export-content:focus-visible {
+            background-color: #f7faf5;
+            outline: none;
+        }
+
+        .export-icon {
+            width: 18px;
+            height: 18px;
+            stroke: #4a5568;
+            stroke-width: 2;
+            fill: none;
+            flex-shrink: 0;
+        }
+
+        .export-status {
+            font-size: 11px;
+            color: #4a7a5a;
+            padding: 0 24px 14px 24px;
+            display: none;
+        }
+
+        @media (max-width: 900px) {
+            body { flex-direction: column; }
+            .sidebar { width: 100%; flex-direction: row; flex-wrap: wrap; padding: 16px; }
+            .nav-item.active { border-radius: 8px; margin-right: 0; }
+            .grid-container { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <button class="nav-item" onclick="window.location.href='dashboard-v2.html'">
+            <svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+            Dashboard
+        </button>
+        <button class="nav-item" onclick="window.location.href='vitals-history.html'">
+            <svg class="nav-icon" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l8.72-8.72 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+            My Vitals
+        </button>
+        <button class="nav-item" onclick="window.location.href='journal.html'">
+            <svg class="nav-icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+            Journal
+        </button>
+        <button class="nav-item" onclick="window.location.href='insights.html'">
+            <svg class="nav-icon" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+            Insights
+        </button>
+        <button class="nav-item active" onclick="window.location.href='settings.html'">
+            <svg class="nav-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+            Settings
+        </button>
+    </div>
+
+    <div class="main-container">
+        <div class="top-header">
+            <button class="icon-btn" aria-label="Notifications" onclick="window.location.href='notifications.html'">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+            </button>
+            <button class="avatar" aria-label="View profile" onclick="window.location.href='profile.html'">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+            </button>
+        </div>
+
+        <h1 class="page-title">Account & System Settings</h1>
+
+        <div class="grid-container">
+            <div class="column">
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">Account Info</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="editModeToggle" onchange="toggleEditMode()">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <p class="card-subtext" id="editModeHint">Toggle on to edit your name and email.</p>
+                    <div class="form-group">
+                        <label class="form-label" for="nameInput">Name</label>
+                        <input type="text" id="nameInput" class="input-box" value="Alex" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="emailInput">Email</label>
+                        <input type="email" id="emailInput" class="input-box" value="alexannam@gmail.com" disabled>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title" style="margin-bottom: 16px;">Device Pairing</div>
+                    <div class="card-row">
+                        <div>
+                            <span class="card-row-text">Sync Enabled</span>
+                            <div class="card-row-sub">Share vitals data with your paired device</div>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="card-row">
+                        <span class="card-row-text">Paired Device</span>
+                        <button class="select-dropdown" id="deviceDropdown" onclick="cycleDevice()">
+                            <span id="deviceName">Apple Watch Series 8</span>
+                            <svg class="arrow-down" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="column">
+                <div class="card">
+                    <div class="card-header" style="margin-bottom: 4px;">
+                        <span class="card-title">Notifications</span>
+                    </div>
+                    <div class="card-row">
+                        <span class="card-row-text">Email Alerts</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="card-row">
+                        <span class="card-row-text">Push Notifications</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="card-row">
+                        <span class="card-row-text">Crisis Team Alerts</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" checked disabled>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="card export-card">
+                    <div class="export-header">
+                        <div class="card-title">Data Export</div>
+                    </div>
+                    <p class="export-subtext">Download a copy of your check-ins, journal entries, and vitals history.</p>
+                    <button class="export-content" onclick="exportData()">
+                        <span class="card-row-text">Download as CSV</span>
+                        <svg class="export-icon" viewBox="0 0 24 24">
+                            <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+                            <polyline points="16 6 12 2 8 6"></polyline>
+                            <line x1="12" y1="2" x2="12" y2="15"></line>
+                        </svg>
+                    </button>
+                    <p class="export-status" id="exportStatus">Export started — check your downloads folder.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Account edit toggle --------------------------------------
+        function toggleEditMode() {
+            const editing = document.getElementById("editModeToggle").checked;
+            document.getElementById("nameInput").disabled = !editing;
+            document.getElementById("emailInput").disabled = !editing;
+            document.getElementById("editModeHint").textContent = editing
+                ? "You can now edit your name and email."
+                : "Toggle on to edit your name and email.";
+
+            // Once your backend (Stage 3) has a profile endpoint, save
+            // changes here when editing is turned back off, e.g.:
+            // if (!editing) fetch(`${API_BASE}/api/profile`, { method: "PUT", ... });
+        }
+
+        // --- Device pairing dropdown (demo cycle) ----------------------
+        const devices = ["Apple Watch Series 8", "Fitbit Sense", "None (manual check-ins only)"];
+        let deviceIndex = 0;
+
+        function cycleDevice() {
+            deviceIndex = (deviceIndex + 1) % devices.length;
+            document.getElementById("deviceName").textContent = devices[deviceIndex];
+            // Replace this cycling behavior with a real dropdown menu or
+            // modal once you have more than a couple of device options.
+        }
+
+        // --- Data export -------------------------------------------------
+        function exportData() {
+            // No backend yet — this just simulates the export.
+            // Once ready, trigger a real download, e.g.:
+            // window.location.href = `${API_BASE}/api/export?format=csv`;
+            const status = document.getElementById("exportStatus");
+            status.style.display = "block";
+            setTimeout(() => { status.style.display = "none"; }, 3000);
+        }
+    </script>
+
+</body>
+</html>

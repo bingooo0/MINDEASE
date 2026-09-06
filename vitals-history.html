@@ -6,6 +6,16 @@
     <title>Alex's Vitals History</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --mint-bg: #cfe3d8;
+            --panel-light: #e3efe9;
+            --teal-dark: #1f6f5c;
+            --teal-darker: #175646;
+            --text: #14251f;
+            --muted: #4b6358;
+            --border: #9fc2b2;
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
@@ -14,7 +24,7 @@
         }
 
         body {
-            background-color: #e5eedf;
+            background-color: var(--mint-bg);
             min-height: 100vh;
             padding: 20px;
         }
@@ -23,7 +33,7 @@
             display: flex;
             width: 100%;
             min-height: calc(100vh - 40px);
-            background-color: #f6faf5;
+            background-color: var(--panel-light);
             border-radius: 12px;
             overflow: hidden;
             box-shadow: 0 10px 30px rgba(0,0,0,0.05);
@@ -33,7 +43,7 @@
         .sidebar {
             width: 170px;
             flex-shrink: 0;
-            background-color: #b7d7b0;
+            background-color: var(--teal-dark);
             padding: 24px 12px;
             display: flex;
             flex-direction: column;
@@ -46,7 +56,7 @@
             gap: 10px;
             padding: 10px 14px;
             border-radius: 8px;
-            color: #2c3e2e;
+            color: var(--panel-light);
             text-decoration: none;
             font-size: 13px;
             font-weight: 500;
@@ -59,8 +69,8 @@
         }
 
         .nav-item.active {
-            background-color: #8ebd82;
-            color: #1a2e1c;
+            background-color: rgba(255,255,255,0.15);
+            color: #ffffff;
             font-weight: 600;
         }
 
@@ -95,7 +105,7 @@
         .page-title {
             font-size: 22px;
             font-weight: 700;
-            color: #1a1a1a;
+            color: var(--text);
         }
 
         .header-actions {
@@ -108,7 +118,7 @@
             background: none;
             border: none;
             cursor: pointer;
-            color: #4a5568;
+            color: var(--muted);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -118,7 +128,7 @@
             width: 28px;
             height: 28px;
             border-radius: 50%;
-            background-color: #cbd5e1;
+            background-color: var(--border);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -128,7 +138,7 @@
         .avatar svg {
             width: 20px;
             height: 20px;
-            fill: #64748b;
+            fill: var(--muted);
         }
 
         /* Grid Layout */
@@ -158,7 +168,7 @@
         .card-title {
             font-size: 13px;
             font-weight: 700;
-            color: #1a1a1a;
+            color: var(--text);
         }
 
         .trend-badge {
@@ -167,7 +177,7 @@
             gap: 2px;
             font-size: 11px;
             font-weight: 600;
-            color: #2e7d32;
+            color: var(--teal-dark);
         }
 
         .trend-badge svg {
@@ -185,7 +195,7 @@
         .value-large {
             font-size: 20px;
             font-weight: 700;
-            color: #1a1a1a;
+            color: var(--text);
             display: flex;
             align-items: baseline;
             gap: 4px;
@@ -194,12 +204,12 @@
         .value-unit {
             font-size: 11px;
             font-weight: 600;
-            color: #4a5568;
+            color: var(--muted);
         }
 
         .value-timestamp {
             font-size: 10px;
-            color: #94a3b8;
+            color: var(--muted);
             margin-top: 2px;
         }
 
@@ -221,9 +231,9 @@
             text-align: left;
             font-size: 11px;
             font-weight: 600;
-            color: #4a5568;
+            color: var(--muted);
             padding: 6px 8px;
-            background-color: #eaf3e8;
+            background-color: var(--panel-light);
         }
 
         .bp-table th:first-child {
@@ -239,7 +249,7 @@
         .bp-table td {
             padding: 8px;
             font-size: 11px;
-            color: #1a1a1a;
+            color: var(--text);
             border-bottom: 1px solid #f5f5f5;
         }
 
@@ -255,14 +265,14 @@
             font-weight: 600;
         }
 
-        .bp-status.normal { color: #2e7d32; }
+        .bp-status.normal { color: var(--teal-dark); }
         .bp-status.elevated { color: #b45309; }
 
         .bp-trend-cell {
             display: flex;
             align-items: center;
             gap: 2px;
-            color: #64748b;
+            color: var(--muted);
             font-weight: 600;
         }
 
@@ -285,32 +295,32 @@
         .stat-label {
             font-size: 12px;
             font-weight: 700;
-            color: #1a1a1a;
+            color: var(--text);
             line-height: 1.2;
         }
 
         .stat-val-big {
             font-size: 18px;
             font-weight: 700;
-            color: #1a1a1a;
+            color: var(--text);
             margin-top: 4px;
         }
 
         .stat-divider {
             width: 1px;
             height: 40px;
-            background-color: #e2e8f0;
+            background-color: var(--border);
         }
 
         .sleep-quality {
             font-size: 14px;
             font-weight: 700;
-            color: #1a1a1a;
+            color: var(--text);
         }
 
         .sleep-sub {
             font-size: 11px;
-            color: #64748b;
+            color: var(--muted);
             margin-top: 2px;
         }
 
@@ -319,13 +329,13 @@
             align-items: center;
             gap: 4px;
             font-size: 10px;
-            color: #2e7d32;
+            color: var(--teal-dark);
             margin-top: 8px;
             font-weight: 600;
         }
 
         .trend-neutral {
-            color: #887456;
+            color: var(--muted);
         }
 
         /* Cortisol Card */
@@ -335,7 +345,7 @@
 
         .cortisol-note {
             font-size: 10px;
-            color: #94a3b8;
+            color: var(--muted);
             margin-top: 6px;
             line-height: 1.4;
         }
@@ -359,7 +369,7 @@
             flex-direction: column;
             justify-content: space-between;
             font-size: 9px;
-            color: #64748b;
+            color: var(--muted);
         }
 
         .bar-group {
@@ -381,17 +391,17 @@
 
         .bar {
             width: 10px;
-            background-color: #5b9e75;
+            background-color: var(--teal-dark);
             border-radius: 3px 3px 0 0;
         }
 
         .bar.purple {
-            background-color: #a4a1db;
+            background-color: var(--teal-darker);
         }
 
         .bar-label {
             font-size: 9px;
-            color: #64748b;
+            color: var(--muted);
         }
 
         .legend {
@@ -399,7 +409,7 @@
             gap: 14px;
             margin-top: 8px;
             font-size: 10px;
-            color: #4a5568;
+            color: var(--muted);
         }
 
         .legend-item {
@@ -414,8 +424,8 @@
             border-radius: 2px;
         }
 
-        .legend-dot.morning { background-color: #5b9e75; }
-        .legend-dot.evening { background-color: #a4a1db; }
+        .legend-dot.morning { background-color: var(--teal-dark); }
+        .legend-dot.evening { background-color: var(--teal-darker); }
 
         @media (max-width: 860px) {
             .dashboard-container {
@@ -497,29 +507,29 @@
                             <line x1="0" y1="80" x2="320" y2="80" stroke="#f0f4f0" stroke-width="1" />
                             <line x1="0" y1="100" x2="320" y2="100" stroke="#f0f4f0" stroke-width="1" />
 
-                            <text x="0" y="23" font-size="8" fill="#a0aec0">150</text>
-                            <text x="0" y="43" font-size="8" fill="#a0aec0">130</text>
-                            <text x="0" y="63" font-size="8" fill="#a0aec0">120</text>
-                            <text x="0" y="83" font-size="8" fill="#a0aec0">100</text>
-                            <text x="0" y="103" font-size="8" fill="#a0aec0">90</text>
-                            <text x="0" y="118" font-size="8" fill="#a0aec0">70</text>
+                            <text x="0" y="23" font-size="8" fill="#4b6358">150</text>
+                            <text x="0" y="43" font-size="8" fill="#4b6358">130</text>
+                            <text x="0" y="63" font-size="8" fill="#4b6358">120</text>
+                            <text x="0" y="83" font-size="8" fill="#4b6358">100</text>
+                            <text x="0" y="103" font-size="8" fill="#4b6358">90</text>
+                            <text x="0" y="118" font-size="8" fill="#4b6358">70</text>
 
                             <polygon points="
                                 20,95 25,92 30,95 35,90 40,88 45,91 50,92 55,95 60,94 65,88 70,88 75,85 80,85 85,82 90,75 95,75 100,68 105,72 110,65 115,70 120,62 125,55 130,68 135,60 140,65 145,52 150,66 155,70 160,62 165,75 170,72 175,65 180,42 185,40 190,48 195,65 200,55 205,62 210,52 215,60 220,58 225,28 230,42 235,52 240,65 245,55 250,58 255,68 260,65 265,65 270,70 275,68 280,68 285,72
                                 285,110 20,110
-                            " fill="#eef6ed" opacity="0.6"/>
+                            " fill="#e3efe9" opacity="0.6"/>
 
                             <polyline points="
                                 20,95 25,92 30,95 35,90 40,88 45,91 50,92 55,95 60,94 65,88 70,88 75,85 80,85 85,82 90,75 95,75 100,68 105,72 110,65 115,70 120,62 125,55 130,68 135,60 140,65 145,52 150,66 155,70 160,62 165,75 170,72 175,65 180,42 185,40 190,48 195,65 200,55 205,62 210,52 215,60 220,58 225,28 230,42 235,52 240,65 245,55 250,58 255,68 260,65 265,65 270,70 275,68 280,68 285,72
-                            " fill="none" stroke="#2d5a3f" stroke-width="1.5" stroke-linejoin="round"/>
+                            " fill="none" stroke="#175646" stroke-width="1.5" stroke-linejoin="round"/>
 
-                            <text x="20" y="118" font-size="8" fill="#4a5568">Mon</text>
-                            <text x="60" y="118" font-size="8" fill="#4a5568">Tue</text>
-                            <text x="100" y="118" font-size="8" fill="#4a5568">Wed</text>
-                            <text x="145" y="118" font-size="8" fill="#4a5568">Thu</text>
-                            <text x="190" y="118" font-size="8" fill="#4a5568">Fri</text>
-                            <text x="230" y="118" font-size="8" fill="#4a5568">Sat</text>
-                            <text x="270" y="118" font-size="8" fill="#4a5568">Sun</text>
+                            <text x="20" y="118" font-size="8" fill="#4b6358">Mon</text>
+                            <text x="60" y="118" font-size="8" fill="#4b6358">Tue</text>
+                            <text x="100" y="118" font-size="8" fill="#4b6358">Wed</text>
+                            <text x="145" y="118" font-size="8" fill="#4b6358">Thu</text>
+                            <text x="190" y="118" font-size="8" fill="#4b6358">Fri</text>
+                            <text x="230" y="118" font-size="8" fill="#4b6358">Sat</text>
+                            <text x="270" y="118" font-size="8" fill="#4b6358">Sun</text>
                         </svg>
                     </div>
                 </div>
@@ -595,7 +605,7 @@
                     </div>
 
                     <div class="trend-inline">
-                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#2e7d32" stroke-width="3"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#1f6f5c" stroke-width="3"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
                         Improving vs last week
                     </div>
                 </div>
