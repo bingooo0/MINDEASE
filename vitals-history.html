@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alex's Vitals History</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background-color: #e5eedf;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .dashboard-container {
+            display: flex;
+            width: 100%;
+            min-height: calc(100vh - 40px);
+            background-color: #f6faf5;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 170px;
+            flex-shrink: 0;
+            background-color: #b7d7b0;
+            padding: 24px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            border-radius: 8px;
+            color: #2c3e2e;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .nav-item:hover, .nav-item:focus-visible {
+            background-color: rgba(255,255,255,0.35);
+            outline: none;
+        }
+
+        .nav-item.active {
+            background-color: #8ebd82;
+            color: #1a2e1c;
+            font-weight: 600;
+        }
+
+        .nav-item svg {
+            width: 16px;
+            height: 16px;
+            stroke: currentColor;
+            stroke-width: 2;
+            fill: none;
+            flex-shrink: 0;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            min-width: 0;
+            padding: 24px 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            position: relative;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+
+        .page-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #4a5568;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background-color: #cbd5e1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .avatar svg {
+            width: 20px;
+            height: 20px;
+            fill: #64748b;
+        }
+
+        /* Grid Layout */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            grid-template-rows: auto auto;
+            gap: 16px;
+        }
+
+        /* Card styles */
+        .card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 14px 16px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+            border: 1px solid #f0f4f0;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .card-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+
+        .trend-badge {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            font-size: 11px;
+            font-weight: 600;
+            color: #2e7d32;
+        }
+
+        .trend-badge svg {
+            width: 12px;
+            height: 12px;
+            stroke: currentColor;
+            stroke-width: 2.5;
+        }
+
+        /* Heart Rate Card */
+        .heart-rate-card {
+            grid-row: span 1;
+        }
+
+        .value-large {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1a1a1a;
+            display: flex;
+            align-items: baseline;
+            gap: 4px;
+        }
+
+        .value-unit {
+            font-size: 11px;
+            font-weight: 600;
+            color: #4a5568;
+        }
+
+        .value-timestamp {
+            font-size: 10px;
+            color: #94a3b8;
+            margin-top: 2px;
+        }
+
+        .chart-container {
+            height: 140px;
+            width: 100%;
+            margin-top: 10px;
+            position: relative;
+        }
+
+        /* Blood Pressure Card */
+        .bp-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 4px;
+        }
+
+        .bp-table th {
+            text-align: left;
+            font-size: 11px;
+            font-weight: 600;
+            color: #4a5568;
+            padding: 6px 8px;
+            background-color: #eaf3e8;
+        }
+
+        .bp-table th:first-child {
+            border-top-left-radius: 4px;
+            border-bottom-left-radius: 4px;
+        }
+
+        .bp-table th:last-child {
+            border-top-right-radius: 4px;
+            border-bottom-right-radius: 4px;
+        }
+
+        .bp-table td {
+            padding: 8px;
+            font-size: 11px;
+            color: #1a1a1a;
+            border-bottom: 1px solid #f5f5f5;
+        }
+
+        .bp-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .bp-val {
+            font-weight: 700;
+        }
+
+        .bp-status {
+            font-weight: 600;
+        }
+
+        .bp-status.normal { color: #2e7d32; }
+        .bp-status.elevated { color: #b45309; }
+
+        .bp-trend-cell {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            color: #64748b;
+            font-weight: 600;
+        }
+
+        /* Bottom Row Cards */
+        .bottom-left-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .stat-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: #1a1a1a;
+            line-height: 1.2;
+        }
+
+        .stat-val-big {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-top: 4px;
+        }
+
+        .stat-divider {
+            width: 1px;
+            height: 40px;
+            background-color: #e2e8f0;
+        }
+
+        .sleep-quality {
+            font-size: 14px;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+
+        .sleep-sub {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 2px;
+        }
+
+        .trend-inline {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 10px;
+            color: #2e7d32;
+            margin-top: 8px;
+            font-weight: 600;
+        }
+
+        .trend-neutral {
+            color: #887456;
+        }
+
+        /* Cortisol Card */
+        .cortisol-card {
+            grid-column: 2;
+        }
+
+        .cortisol-note {
+            font-size: 10px;
+            color: #94a3b8;
+            margin-top: 6px;
+            line-height: 1.4;
+        }
+
+        .bar-chart {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            height: 100px;
+            padding-top: 10px;
+            padding-left: 24px;
+            position: relative;
+        }
+
+        .y-axis {
+            position: absolute;
+            left: 0;
+            top: 10px;
+            bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            font-size: 9px;
+            color: #64748b;
+        }
+
+        .bar-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            height: 100%;
+            justify-content: flex-end;
+            z-index: 1;
+        }
+
+        .bar-pair {
+            display: flex;
+            align-items: flex-end;
+            gap: 3px;
+            height: 100%;
+        }
+
+        .bar {
+            width: 10px;
+            background-color: #5b9e75;
+            border-radius: 3px 3px 0 0;
+        }
+
+        .bar.purple {
+            background-color: #a4a1db;
+        }
+
+        .bar-label {
+            font-size: 9px;
+            color: #64748b;
+        }
+
+        .legend {
+            display: flex;
+            gap: 14px;
+            margin-top: 8px;
+            font-size: 10px;
+            color: #4a5568;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .legend-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 2px;
+        }
+
+        .legend-dot.morning { background-color: #5b9e75; }
+        .legend-dot.evening { background-color: #a4a1db; }
+
+        @media (max-width: 860px) {
+            .dashboard-container {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            .cortisol-card {
+                grid-column: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <a href="dashboard-v2.html" class="nav-item">
+                <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+                Dashboard
+            </a>
+            <a href="vitals-history.html" class="nav-item active">
+                <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+                My Vitals
+            </a>
+            <a href="journal.html" class="nav-item">
+                <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                Journal
+            </a>
+            <a href="insights.html" class="nav-item">
+                <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                Insights
+            </a>
+            <a href="settings.html" class="nav-item">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                Settings
+            </a>
+        </aside>
+
+        <main class="main-content">
+            <header class="header">
+                <h1 class="page-title">Alex's Vitals History</h1>
+                <div class="header-actions">
+                    <button class="icon-btn" aria-label="Notifications">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                    </button>
+                    <div class="avatar">
+                        <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"></path></svg>
+                    </div>
+                </div>
+            </header>
+
+            <div class="dashboard-grid">
+
+                <div class="card heart-rate-card">
+                    <div class="card-header">
+                        <span class="card-title">Heart Rate (Last 7 Days)</span>
+                        <div class="trend-badge">
+                            Trend
+                            <svg viewBox="0 0 24 24" fill="none"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+                        </div>
+                    </div>
+                    <div class="value-large">
+                        72 <span class="value-unit">BPM (resting)</span>
+                    </div>
+                    <div class="value-timestamp">Last reading: today, 9:00 PM</div>
+
+                    <div class="chart-container">
+                        <svg width="100%" height="100%" viewBox="0 0 320 120" preserveAspectRatio="none">
+                            <line x1="0" y1="20" x2="320" y2="20" stroke="#f0f4f0" stroke-width="1" />
+                            <line x1="0" y1="40" x2="320" y2="40" stroke="#f0f4f0" stroke-width="1" />
+                            <line x1="0" y1="60" x2="320" y2="60" stroke="#f0f4f0" stroke-width="1" />
+                            <line x1="0" y1="80" x2="320" y2="80" stroke="#f0f4f0" stroke-width="1" />
+                            <line x1="0" y1="100" x2="320" y2="100" stroke="#f0f4f0" stroke-width="1" />
+
+                            <text x="0" y="23" font-size="8" fill="#a0aec0">150</text>
+                            <text x="0" y="43" font-size="8" fill="#a0aec0">130</text>
+                            <text x="0" y="63" font-size="8" fill="#a0aec0">120</text>
+                            <text x="0" y="83" font-size="8" fill="#a0aec0">100</text>
+                            <text x="0" y="103" font-size="8" fill="#a0aec0">90</text>
+                            <text x="0" y="118" font-size="8" fill="#a0aec0">70</text>
+
+                            <polygon points="
+                                20,95 25,92 30,95 35,90 40,88 45,91 50,92 55,95 60,94 65,88 70,88 75,85 80,85 85,82 90,75 95,75 100,68 105,72 110,65 115,70 120,62 125,55 130,68 135,60 140,65 145,52 150,66 155,70 160,62 165,75 170,72 175,65 180,42 185,40 190,48 195,65 200,55 205,62 210,52 215,60 220,58 225,28 230,42 235,52 240,65 245,55 250,58 255,68 260,65 265,65 270,70 275,68 280,68 285,72
+                                285,110 20,110
+                            " fill="#eef6ed" opacity="0.6"/>
+
+                            <polyline points="
+                                20,95 25,92 30,95 35,90 40,88 45,91 50,92 55,95 60,94 65,88 70,88 75,85 80,85 85,82 90,75 95,75 100,68 105,72 110,65 115,70 120,62 125,55 130,68 135,60 140,65 145,52 150,66 155,70 160,62 165,75 170,72 175,65 180,42 185,40 190,48 195,65 200,55 205,62 210,52 215,60 220,58 225,28 230,42 235,52 240,65 245,55 250,58 255,68 260,65 265,65 270,70 275,68 280,68 285,72
+                            " fill="none" stroke="#2d5a3f" stroke-width="1.5" stroke-linejoin="round"/>
+
+                            <text x="20" y="118" font-size="8" fill="#4a5568">Mon</text>
+                            <text x="60" y="118" font-size="8" fill="#4a5568">Tue</text>
+                            <text x="100" y="118" font-size="8" fill="#4a5568">Wed</text>
+                            <text x="145" y="118" font-size="8" fill="#4a5568">Thu</text>
+                            <text x="190" y="118" font-size="8" fill="#4a5568">Fri</text>
+                            <text x="230" y="118" font-size="8" fill="#4a5568">Sat</text>
+                            <text x="270" y="118" font-size="8" fill="#4a5568">Sun</text>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">Blood Pressure Readings</span>
+                        <div class="trend-badge">
+                            Trend
+                            <svg viewBox="0 0 24 24" fill="none"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+                        </div>
+                    </div>
+
+                    <table class="bp-table">
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>Reading</th>
+                                <th>Status</th>
+                                <th>Trend</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Today, 9:00 AM</td>
+                                <td class="bp-val">118 / 78</td>
+                                <td class="bp-status normal">Normal</td>
+                                <td>
+                                    <div class="bp-trend-cell">
+                                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                                        Stable
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Yesterday, 8:45 PM</td>
+                                <td class="bp-val">122 / 80</td>
+                                <td class="bp-status normal">Normal</td>
+                                <td>
+                                    <div class="bp-trend-cell">
+                                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+                                        +4
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Yesterday, 9:10 AM</td>
+                                <td class="bp-val">130 / 85</td>
+                                <td class="bp-status elevated">Elevated</td>
+                                <td>
+                                    <div class="bp-trend-cell">
+                                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+                                        +8
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="card bottom-left-card">
+                    <div class="stat-group">
+                        <span class="stat-label">Resting<br>Heart Rate</span>
+                        <span class="stat-val-big">68 <span style="font-size: 10px; font-weight:600;">BPM</span></span>
+                    </div>
+
+                    <div class="stat-divider"></div>
+
+                    <div class="stat-group" style="flex: 1; padding-left: 16px;">
+                        <span class="stat-label" style="font-weight: 600;">Sleep Quality</span>
+                        <span class="sleep-quality">Good</span>
+                        <span class="sleep-sub">7.5 hrs last night</span>
+                    </div>
+
+                    <div class="trend-inline">
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#2e7d32" stroke-width="3"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+                        Improving vs last week
+                    </div>
+                </div>
+
+                <div class="card cortisol-card">
+                    <div class="card-header">
+                        <span class="card-title">Cortisol Trend</span>
+                        <div class="trend-badge">
+                            Trend
+                            <svg viewBox="0 0 24 24" fill="none"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+                        </div>
+                    </div>
+
+                    <div class="bar-chart">
+                        <div class="y-axis">
+                            <span>25</span>
+                            <span>15</span>
+                            <span>5</span>
+                        </div>
+
+                        <div class="bar-group">
+                            <div class="bar-pair">
+                                <div class="bar" style="height: 55%;"></div>
+                                <div class="bar purple" style="height: 35%;"></div>
+                            </div>
+                            <span class="bar-label">Mon</span>
+                        </div>
+                        <div class="bar-group">
+                            <div class="bar-pair">
+                                <div class="bar" style="height: 60%;"></div>
+                                <div class="bar purple" style="height: 40%;"></div>
+                            </div>
+                            <span class="bar-label">Tue</span>
+                        </div>
+                        <div class="bar-group">
+                            <div class="bar-pair">
+                                <div class="bar" style="height: 50%;"></div>
+                                <div class="bar purple" style="height: 32%;"></div>
+                            </div>
+                            <span class="bar-label">Wed</span>
+                        </div>
+                        <div class="bar-group">
+                            <div class="bar-pair">
+                                <div class="bar" style="height: 65%;"></div>
+                                <div class="bar purple" style="height: 48%;"></div>
+                            </div>
+                            <span class="bar-label">Thu</span>
+                        </div>
+                        <div class="bar-group">
+                            <div class="bar-pair">
+                                <div class="bar" style="height: 58%;"></div>
+                                <div class="bar purple" style="height: 38%;"></div>
+                            </div>
+                            <span class="bar-label">Fri</span>
+                        </div>
+                        <div class="bar-group">
+                            <div class="bar-pair">
+                                <div class="bar" style="height: 40%;"></div>
+                                <div class="bar purple" style="height: 25%;"></div>
+                            </div>
+                            <span class="bar-label">Sat</span>
+                        </div>
+                        <div class="bar-group">
+                            <div class="bar-pair">
+                                <div class="bar" style="height: 38%;"></div>
+                                <div class="bar purple" style="height: 22%;"></div>
+                            </div>
+                            <span class="bar-label">Sun</span>
+                        </div>
+                    </div>
+
+                    <div class="legend">
+                        <div class="legend-item"><span class="legend-dot morning"></span>Morning</div>
+                        <div class="legend-item"><span class="legend-dot evening"></span>Evening</div>
+                    </div>
+
+                    <p class="cortisol-note">
+                        Note: cortisol normally requires a lab or specialized wearable test.
+                        Consider swapping this card for self-reported stress data
+                        (matching your check-in form) unless your team has an actual sensor for it.
+                    </p>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // --- Backend integration ------------------------------------------
+        // Once your backend (Stage 3) exposes a vitals-history endpoint,
+        // fetch real data here and populate the chart/table instead of the
+        // hardcoded sample values above. Example shape:
+        //
+        // fetch("http://localhost:5000/api/vitals/history?case_id=DEMO-1024")
+        //   .then(res => res.json())
+        //   .then(data => { /* update heart rate chart, BP table, etc. */ });
+    </script>
+
+</body>
+</html>

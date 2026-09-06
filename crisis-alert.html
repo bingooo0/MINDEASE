@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crisis Alert — Officer View</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, sans-serif;
+}
+
+body{
+    background:#f4f4f4;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    padding:40px 20px;
+}
+
+.alert-box{
+    width:100%;
+    max-width:640px;
+    background:white;
+    border-radius:20px;
+    padding:30px;
+    box-shadow:0 3px 15px rgba(0,0,0,0.12);
+    border-top:8px solid #d50000;
+}
+
+.alert-title{
+    text-align:center;
+    color:#c62828;
+    font-size:28px;
+    font-weight:bold;
+    margin-bottom:20px;
+}
+
+.case-id{
+    text-align:center;
+    color:#666;
+    margin-bottom:20px;
+    font-size:14px;
+}
+
+.detail-row{
+    display:flex;
+    justify-content:space-between;
+    padding:10px 0;
+    border-bottom:1px solid #eee;
+}
+
+.detail-label{
+    color:#666;
+}
+
+.detail-value{
+    font-weight:bold;
+    color:#222;
+}
+
+.risk-high{ color:#c62828; }
+
+.alert-actions{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:15px;
+    margin-top:25px;
+}
+
+.action-btn{
+    background:#d50000;
+    color:white;
+    border:none;
+    padding:20px 10px;
+    border-radius:12px;
+    font-size:15px;
+    cursor:pointer;
+}
+
+.action-btn:hover, .action-btn:focus-visible{
+    background:#a30000;
+}
+
+.close-btn{
+    margin-top:15px;
+    background:#444;
+    width:100%;
+}
+
+.close-btn:hover, .close-btn:focus-visible{
+    background:#222;
+}
+
+@media (max-width: 500px){
+    .alert-actions{ grid-template-columns:1fr; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="alert-box" role="alert" aria-live="assertive">
+
+    <div class="alert-title">
+        🚨 HIGH DISTRESS RISK DETECTED
+    </div>
+
+    <p class="case-id" id="caseId">Case: DEMO-1024</p>
+
+    <div class="detail-row">
+        <span class="detail-label">AI Model Prediction</span>
+        <span class="detail-value risk-high" id="riskScore">High Risk (88%)</span>
+    </div>
+
+    <div class="detail-row">
+        <span class="detail-label">Heart Rate</span>
+        <span class="detail-value" id="heartRate">135 BPM</span>
+    </div>
+
+    <div class="detail-row">
+        <span class="detail-label">Sleep Disruption</span>
+        <span class="detail-value" id="sleepStatus">Detected</span>
+    </div>
+
+    <div class="detail-row">
+        <span class="detail-label">Behavioral Trigger</span>
+        <span class="detail-value" id="trigger">Panic attack logged</span>
+    </div>
+
+    <div class="alert-actions">
+        <button class="action-btn" onclick="callPatient()">
+            📞 Call Patient
+        </button>
+
+        <button class="action-btn" onclick="viewLocation()">
+            📍 View Location
+        </button>
+
+        <button class="action-btn" onclick="notifyCrisisTeam()">
+            👨‍⚕️ Crisis Team
+        </button>
+    </div>
+
+    <button class="action-btn close-btn" onclick="closeAlert()">
+        Mark as Reviewed
+    </button>
+
+</div>
+
+<audio id="alertSound">
+    <source src="alert.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+
+// --- Backend integration ------------------------------------------------
+// This page is meant to be opened by the officer dashboard when a case's
+// risk score crosses a threshold (Stage 5/6). Wire it up by passing the
+// case ID as a query param, e.g. crisis-alert.html?case=DEMO-1024, then
+// fetching that case's latest data here:
+
+const API_BASE = "http://localhost:5000";
+
+async function loadCaseDetails() {
+    const params = new URLSearchParams(window.location.search);
+    const caseId = params.get("case") || "DEMO-1024";
+    document.getElementById("caseId").textContent = `Case: ${caseId}`;
+
+    try {
+        const res = await fetch(`${API_BASE}/api/cases/${caseId}/risk`);
+        if (!res.ok) throw new Error("Risk endpoint not available yet");
+        const data = await res.json();
+
+        document.getElementById("riskScore").textContent = `${data.risk_level} (${data.risk_score}%)`;
+        document.getElementById("heartRate").textContent = data.heart_rate ?? "--";
+        document.getElementById("sleepStatus").textContent = data.sleep_disruption ?? "--";
+        document.getElementById("trigger").textContent = data.trigger ?? "--";
+    } catch (err) {
+        // Backend/Stage 5 not wired up yet — keep the demo placeholder values.
+    }
+
+    // Play the alert tone once details are loaded, so officers notice
+    // even if this page opens in a background tab.
+    const sound = document.getElementById("alertSound");
+    sound.play().catch(() => {
+        // Autoplay can be blocked by the browser until the user interacts
+        // with the page at least once — that's fine, this just no-ops.
+    });
+}
+
+window.addEventListener("DOMContentLoaded", loadCaseDetails);
+
+function callPatient() {
+    alert("Dialing patient's registered emergency contact number...");
+}
+
+function viewLocation() {
+    alert("Opening last known location on map...");
+}
+
+function notifyCrisisTeam() {
+    alert("Notifying on-call crisis team...");
+}
+
+function closeAlert() {
+    // In production, POST that this alert was reviewed so it clears from
+    // the active queue on the officer dashboard, e.g.:
+    // fetch(`${API_BASE}/api/alerts/${caseId}/resolve`, { method: "POST" });
+    window.close();
+}
+
+</script>
+
+</body>
+</html>
